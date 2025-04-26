@@ -18,7 +18,8 @@ builder.Services.AddTransient<IEmailService, EmailService>();
 // Register pipeline behaviors
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-
+builder.Services.AddSingleton<InMemoryMessageQueue>();
+builder.Services.AddHostedService<EmailNotificationHandler>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

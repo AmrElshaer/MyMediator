@@ -39,9 +39,9 @@ public class CreateUserCommand : IRequest<int>
 public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, int>
 {
     private readonly IUserRepository _repository;
-    private readonly IMediator _mediator;
+    private readonly InMemoryMessageQueue _mediator;
 
-    public CreateUserCommandHandler(IUserRepository repository,IMediator mediator)
+    public CreateUserCommandHandler(IUserRepository repository,InMemoryMessageQueue mediator)
     {
         _repository = repository;
         _mediator = mediator;
@@ -55,7 +55,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, int>
             Name = user.Name,
             UserId = user.Id,
         };
-         await _mediator.Publish(userCreatedNotification,cancellationToken);
+         await _mediator.Writer.WriteAsync(userCreatedNotification,cancellationToken);
         return await _repository.AddAsync(user, cancellationToken);
     }
 }
